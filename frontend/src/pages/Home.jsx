@@ -4,6 +4,7 @@ import Services from "../components/Services";
 import PengumumanPublikasi from "../components/Pengumuman";
 import PertanyaanUmum from "../components/PertanyaanUmum";
 import Location from "../components/Location";
+import Footer from "../components/Footer";
 
 const Home = () => {
     return (
@@ -14,6 +15,7 @@ const Home = () => {
             <PengumumanPublikasi />
             <PertanyaanUmum />
             <Location />
+            <Footer />
         </div>
     );
 };
