@@ -21,8 +21,8 @@ sequelize.authenticate()
   .catch((err) => console.error('Unable to connect to the database:', err));
 
 // Use Routes
-app.use('/api', authRoutes);  // Prefix all auth routes with /api
-app.use('/art', articleRoutes);  // Prefix artikel routes dengan /api
+app.use('/api', authRoutes); 
+app.use('/art', articleRoutes);  
 
 // Start server
 app.listen(PORT, async () => {
