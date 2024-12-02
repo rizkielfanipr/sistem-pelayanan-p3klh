@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 const Hero = () => {
@@ -47,7 +47,7 @@ const Hero = () => {
     );
   };
 
-  // Fungsi auto-scroll setiap 5 detik
+  // Fungsi auto-scroll setiap 7 detik
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) =>
@@ -56,7 +56,7 @@ const Hero = () => {
     }, 7000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [slideTextData.length]); // Add slideTextData.length to dependencies
 
   // Render buttons dynamically
   const renderButtons = HeroContent.buttons.map((button, index) => (

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 // Data FAQ
 const faqs = [
@@ -85,6 +86,17 @@ const AccordionItem = ({ faq, index, isOpen, toggleOpen }) => {
       )}
     </div>
   );
+};
+
+// Menambahkan validasi PropTypes
+AccordionItem.propTypes = {
+  faq: PropTypes.shape({
+    question: PropTypes.string.isRequired,
+    answer: PropTypes.string.isRequired
+  }).isRequired,
+  index: PropTypes.number.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  toggleOpen: PropTypes.func.isRequired
 };
 
 export default PertanyaanUmum;

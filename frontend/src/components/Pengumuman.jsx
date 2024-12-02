@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import PropTypes from "prop-types";
 
 // Data pengumuman dan publikasi
 const pengumumanData = Array.from({ length: 10 }, (_, i) => ({
@@ -86,6 +87,10 @@ const ToggleButton = ({ isPengumuman, onToggle }) => (
   </div>
 );
 
+ToggleButton.propTypes = {
+  isPengumuman: PropTypes.bool.isRequired,
+  onToggle: PropTypes.func.isRequired,
+};
 
 // Komponen Card List
 const CardList = ({ data }) => (
@@ -102,6 +107,15 @@ const CardList = ({ data }) => (
   </div>
 );
 
+CardList.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};
+
 // Komponen Tombol Navigasi
 const NavigationButton = ({ direction, onClick, disabled }) => {
   const isLeft = direction === "left";
@@ -116,6 +130,12 @@ const NavigationButton = ({ direction, onClick, disabled }) => {
       {isLeft ? <AiOutlineLeft size={24} /> : <AiOutlineRight size={24} />}
     </button>
   );
+};
+
+NavigationButton.propTypes = {
+  direction: PropTypes.oneOf(["left", "right"]).isRequired,
+  onClick: PropTypes.func.isRequired,
+  disabled: PropTypes.bool.isRequired,
 };
 
 export default PengumumanPublikasi;

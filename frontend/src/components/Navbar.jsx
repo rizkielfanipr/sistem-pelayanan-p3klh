@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaComment } from 'react-icons/fa'; 
 import Logo from "/logo-dlhk.png";
 
