@@ -1,43 +1,45 @@
-import { useState, useEffect } from "react";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { useState, useEffect } from 'react';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import Modal from './Modal'; // Import Modal Component
 
 const Hero = () => {
   const HeroContent = {
     title: [
-      "Pelayanan Persetujuan Lingkungan",
-      "Dinas Lingkungan Hidup dan Kehutanan",
-      "Daerah Istimewa Yogyakarta"
+      'Pelayanan Persetujuan Lingkungan',
+      'Dinas Lingkungan Hidup dan Kehutanan',
+      'Daerah Istimewa Yogyakarta',
     ],
     description:
-      "Informasi Pelayanan persetujuan lingkungan untuk izin AMDAL, UKL-UPL, SPPL, DELH dan DPLH sesuai regulasi untuk keberlanjutan lingkungan.",
+      'Informasi Pelayanan persetujuan lingkungan untuk izin AMDAL, UKL-UPL, SPPL, DELH dan DPLH sesuai regulasi untuk keberlanjutan lingkungan.',
     buttons: [
       {
-        text: "Ajukan Konsultasi",
-        href: "#",
-        style: "bg-[#002a62] hover:bg-[#002A62] text-white border-0 rounded-xl px-6 py-3"
+        text: 'Ajukan Konsultasi',
+        href: '#',
+        style: 'bg-[#002a62] hover:bg-[#002A62] text-white border-0 rounded-xl px-6 py-3',
       },
       {
-        text: "Lihat Layanan",
-        href: "#",
+        text: 'Lihat Layanan',
+        href: '#',
         style:
-          "border-2 border-[#002a62] text-[#002a62] px-6 py-3 bg-transparent hover:bg-white hover:text-[#002a62] rounded-xl"
-      }
-    ]
+          'border-2 border-[#002a62] text-[#002a62] px-6 py-3 bg-transparent hover:bg-white hover:text-[#002a62] rounded-xl',
+      },
+    ],
   };
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
 
   // Data untuk teks yang akan digeser
   const slideTextData = [
-    "Informasi Pelayanan Persetujuan Lingkungan AMDAL, UKL UPL, SPPL, DELH dan DPLH",
-    "Bidang Penaatan Pengkajian dan Pengembangan Lingkungan Hidup DLHK DIY",
-    "Jam Buka: Senin - Jumat, 07:30 - 15:00."
+    'Informasi Pelayanan Persetujuan Lingkungan AMDAL, UKL UPL, SPPL, DELH dan DPLH',
+    'Bidang Penaatan Pengkajian dan Pengembangan Lingkungan Hidup DLHK DIY',
+    'Jam Buka: Senin - Jumat, 07:30 - 15:00.',
   ];
 
   // Fungsi untuk menggeser ke kiri atau kanan
   const handleScroll = (direction) => {
     setCurrentSlide((prev) =>
-      direction === "left"
+      direction === 'left'
         ? prev === 0
           ? slideTextData.length - 1
           : prev - 1
@@ -56,7 +58,7 @@ const Hero = () => {
     }, 7000);
 
     return () => clearInterval(interval);
-  }, [slideTextData.length]); // Add slideTextData.length to dependencies
+  }, [slideTextData.length]);
 
   // Render buttons dynamically
   const renderButtons = HeroContent.buttons.map((button, index) => (
@@ -68,6 +70,16 @@ const Hero = () => {
       {button.text}
     </a>
   ));
+
+  // Function to open the modal
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div>
@@ -98,11 +110,9 @@ const Hero = () => {
       <div className="relative bg-yellow-400 py-10 overflow-hidden">
         {/* Ornamental shapes */}
         <div className="absolute top-0 left-0 right-0 bottom-0 z-0 pointer-events-none">
-          {/* Left Circle Ornament */}
           <div className="absolute left-10 top-1/4 transform -translate-x-1/2 opacity-30">
             <div className="bg-white rounded-full w-48 h-48"></div>
           </div>
-          {/* Right Circle Ornament moved to inside the top right corner of yellow box */}
           <div className="absolute right-0 top-0 transform translate-x-1/2 opacity-30 z-10">
             <div className="bg-white rounded-full w-48 h-48"></div>
           </div>
@@ -113,7 +123,7 @@ const Hero = () => {
           <div className="flex items-center">
             {/* Arrow Buttons */}
             <div className="flex items-center space-x-4 z-10">
-              {[["left", FaArrowLeft], ["right", FaArrowRight]].map(
+              {[['left', FaArrowLeft], ['right', FaArrowRight]].map(
                 ([direction, Icon], index) => (
                   <button
                     key={index}
@@ -133,16 +143,24 @@ const Hero = () => {
 
             {/* Button to View All, placed at the right */}
             <div className="flex items-center">
-              <a
-                href="#"
+              <button
+                onClick={openModal} // Open modal on click
                 className="inline-block bg-[#002a62] hover:bg-[#002A62] text-white py-3 px-6 rounded-3xl shadow-xl"
               >
                 Lihat Semua
-              </a>
+              </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Modal Component */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={`Layanan Kami - ${slideTextData[currentSlide]}`} // Title with dynamic slide text
+        description={slideTextData[currentSlide]} // Showing the current slide in the modal
+      />
     </div>
   );
 };

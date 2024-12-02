@@ -37,7 +37,6 @@ const Location = () => {
           </div>
         </div>
       </div>
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(path_to_your_image.jpg)' }}></div>
     </section>
   );
 };
