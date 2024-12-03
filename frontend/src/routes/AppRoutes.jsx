@@ -8,6 +8,8 @@ import Evaluasi from '../pages/services/Evaluasi';
 import Dokumen from '../pages/services/Dokumen';
 import Amdalnet from '../pages/services/Amdalnet';
 import Diskusi from '../pages/services/Diskusi';
+import Register from '../pages/Register';
+import Login from '../pages/Login';
 
 const AppRoutes = () => {
   return (
@@ -22,6 +24,10 @@ const AppRoutes = () => {
       <Route path="/kirim-dokumen" element={<Dokumen />} />
       <Route path="/amdalnet" element={<Amdalnet />} />
       <Route path="/forum-diskusi" element={<Diskusi />} />
+
+      {/* Rute Auth */}
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
     </Routes>
   );
 };
