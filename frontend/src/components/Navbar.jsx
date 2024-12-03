@@ -4,7 +4,7 @@ import Logo from "/logo-dlhk.png";
 const Navbar = () => {
 
   const NavItems = [
-    { label: 'Beranda', link: '#beranda' },
+    { label: 'Beranda', link: '/' },
     { label: 'Layanan Kami', link: '#layanan' },
     { label: 'Pengumuman', link: '#pengumuman' },
     { label: 'Kontak Kami', link: '#kontak' },

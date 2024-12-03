@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import Modal from './Modal'; // Import Modal Component
+import Modal from './Modal'; 
 
 const Hero = () => {
   const HeroContent = {
@@ -144,7 +144,7 @@ const Hero = () => {
             {/* Button to View All, placed at the right */}
             <div className="flex items-center">
               <button
-                onClick={openModal} // Open modal on click
+                onClick={openModal} 
                 className="inline-block bg-[#002a62] hover:bg-[#002A62] text-white py-3 px-6 rounded-3xl shadow-xl"
               >
                 Lihat Semua
@@ -158,8 +158,8 @@ const Hero = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={`Layanan Kami - ${slideTextData[currentSlide]}`} // Title with dynamic slide text
-        description={slideTextData[currentSlide]} // Showing the current slide in the modal
+        title={`Layanan Kami`} 
+        description={slideTextData} 
       />
     </div>
   );
