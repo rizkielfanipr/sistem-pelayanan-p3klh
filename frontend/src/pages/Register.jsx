@@ -62,7 +62,7 @@ const Register = () => {
 
         {fields.map((field) => (
           <div key={field.name} className="mb-4">
-            <label className="block text-sm font-semibold">{field.label}</label>
+            <label className="block text-sm">{field.label}</label>
             <div className="relative">
               <input
                 type={field.type}
