@@ -10,6 +10,8 @@ import Amdalnet from '../pages/services/Amdalnet';
 import Diskusi from '../pages/services/Diskusi';
 import Register from '../pages/Register';
 import Login from '../pages/Login';
+import Dashboard from '../pages/admin/Dashboard';
+import AdminPenapisan from '../pages/admin/AdminPenapisan';
 
 const AppRoutes = () => {
   return (
@@ -28,6 +30,10 @@ const AppRoutes = () => {
       {/* Rute Auth */}
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+
+      {/* Rute Admin */}
+      <Route path="/dashboard-admin" element={<Dashboard />} />
+      <Route path="/admin-penapisan" element={<AdminPenapisan />} />
     </Routes>
   );
 };

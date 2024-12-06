@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";  // Import useNavigate
 import AlertError from "../components/AlertError";
 import AlertSuccess from "../components/AlertSuccess";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
@@ -11,7 +12,9 @@ const Login = () => {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [passwordVisible, setPasswordVisible] = useState(false);  
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const navigate = useNavigate();  // Initialize useNavigate
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -26,9 +29,12 @@ const Login = () => {
     setSuccess("");
 
     try {
-      const response = await axios.post("http://localhost:5000/api/login", formData);
+      const response = await axios.post("http://localhost:5000/auth/login", formData);
       setSuccess("Login berhasil!");
       console.log(response.data);
+
+      // Redirect to /dashboard-admin after successful login
+      navigate("/dashboard-admin");  
     } catch (err) {
       setError(err.response?.data?.message || "Terjadi kesalahan saat login.");
     }
