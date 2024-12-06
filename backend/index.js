@@ -2,10 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const sequelize = require('./config/Database');
+const serviceRoutes = require('./routes/serviceRoutes');
 const authRoutes = require('./routes/authRoutes');
-const articleRoutes = require('./routes/articleRoutes');  // Tambahkan artikel routes
+const path = require('path'); // Import path untuk mengatur path file statis
 
-// Load environment variables
 dotenv.config();
 
 const app = express();
@@ -15,14 +15,17 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors());
 
+// Middleware untuk melayani file statis dari folder 'uploads'
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Test database connection
 sequelize.authenticate()
   .then(() => console.log('Database connected successfully'))
   .catch((err) => console.error('Unable to connect to the database:', err));
 
 // Use Routes
-app.use('/api', authRoutes); 
-app.use('/art', articleRoutes);  
+app.use('/auth',authRoutes);
+app.use('/service', serviceRoutes); // Pastikan rute ini sesuai
 
 // Start server
 app.listen(PORT, async () => {

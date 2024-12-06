@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/Database');
 
-const Article = sequelize.define('Article', {
+const Service = sequelize.define('Service', {
   title: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -10,10 +10,20 @@ const Article = sequelize.define('Article', {
     type: DataTypes.TEXT,
     allowNull: false,
   },
-  imageUrl: {
+  image: {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  category: {
+    type: DataTypes.ENUM(
+      'penapisan-dokling',
+      'penilaian-amdal',
+      'pemeriksaan-uklupl',
+      'penilaian-delhdplh',
+      'amdalnet'
+    ),
+    allowNull: false,
+  },
 });
 
-module.exports = Article;
+module.exports = Service;
