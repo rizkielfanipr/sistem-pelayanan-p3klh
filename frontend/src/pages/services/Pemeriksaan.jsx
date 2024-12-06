@@ -9,7 +9,7 @@ const Penapisan = () => {
   });
 
   return (
-    <div>
+    <div className="font-poppins">
       <Navbar />
       <Header
         title="Pemeriksaan UKL UPL"
