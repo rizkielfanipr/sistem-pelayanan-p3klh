@@ -1,55 +1,97 @@
+// ArticleForm.js
 import { useState } from 'react';
 import axios from 'axios';
+import AlertSucces from '../AlertSuccess';  // Import komponen AlertSucces
+import AlertError from '../AlertError';  // Import komponen AlertError
+import Editor from './Editor'; // Import the new Editor component
 
 const ArticleForm = () => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [image, setImage] = useState(null); // Untuk menyimpan file gambar
-  const [category, setCategory] = useState('');
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-
-  const API_URL = 'http://localhost:5000/ser'; // Ganti dengan URL API yang sesuai
-
   const categories = [
     'penapisan-dokling',
     'penilaian-amdal',
     'pemeriksaan-uklupl',
     'penilaian-delhdplh',
+    'registrasi-sppl',
     'amdalnet',
   ];
+
+  const categoryLabels = {
+    'penapisan-dokling': 'Penapisan Dokling',
+    'penilaian-amdal': 'Penilaian AMDAL',
+    'pemeriksaan-uklupl': 'Pemeriksaan UKL UPL',
+    'penilaian-delhdplh': 'Penilaian DELH & DPLH',
+    'registrasi-sppl': 'Registrasi SPPL',
+    'amdalnet': 'AMDALNET',
+  };
+
+  const [formData, setFormData] = useState({
+    title: '',
+    content: '',  // This will be handled by React Quill
+    image: null,
+    category: '',
+  });
+
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const [editorState, setEditorState] = useState(''); // For React Quill editor content
+
+  const API_URL = 'http://localhost:5000/service';
+
+  const fields = [
+    { name: 'title', label: 'Judul', type: 'text' },
+    { name: 'image', label: 'Gambar', type: 'file' },
+    { name: 'category', label: 'Pilih Layanan', type: 'select', options: categories },
+  ];
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === 'image' ? files[0] : value,
+    }));
+  };
+
+  const handleEditorChange = (value) => {
+    setEditorState(value);
+    setFormData((prev) => ({
+      ...prev,
+      content: value, // React Quill's value is the content
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title || !content) {
-      setError('Title and content are required');
+    // Validasi form data
+    if (!formData.title || !formData.content || !formData.category || !formData.image) {
+      setError("Please fill in all required fields.");
       return;
     }
 
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('content', content);
-    formData.append('category', category);
-    if (image) formData.append('image', image);
+    const form = new FormData();
+    form.append('title', formData.title);
+    form.append('content', formData.content); // Content from React Quill
+    form.append('category', formData.category);
+    form.append('image', formData.image);
 
     try {
-      const response = await axios.post(API_URL, formData, {
+      const response = await axios.post(API_URL, form, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
       if (response.status === 201) {
-        setSuccessMessage('Article created successfully!');
-        setTitle('');
-        setContent('');
-        setImage(null);
-        setCategory('');
+        setSuccessMessage("Article created successfully!");
+        setFormData({ title: '', content: '', category: '', image: null });
+        setEditorState('');  // Reset editor
+        setError('');
       }
     } catch (err) {
-      setError('Error creating article. Please try again.');
-      console.error(err);
+      console.error("Error Response:", err.response);
+      setError(`Error: ${err.response ? err.response.data.message : err.message}`);
+      setSuccessMessage('');
     }
   };
 
@@ -57,60 +99,66 @@ const ArticleForm = () => {
     <div className="container mx-auto p-6 max-w-lg bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-semibold mb-4 text-center">Create New Article</h2>
 
-      {successMessage && <p className="text-green-500 text-center">{successMessage}</p>}
-      {error && <p className="text-red-500 text-center">{error}</p>}
+      {successMessage && <AlertSucces message={successMessage} />}
+      {error && <AlertError message={error} />}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
+        {fields.map((field) => {
+          if (field.type === 'select') {
+            return (
+              <div key={field.name}>
+                <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
+                  {field.label}
+                </label>
+                <select
+                  id={field.name}
+                  name={field.name}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="">Pilih Layanan</option>
+                  {field.options.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {categoryLabels[cat]} {/* Menampilkan kategori dengan nama yang lebih user-friendly */}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            );
+          }
 
-        <div>
-          <label htmlFor="content" className="block text-sm font-medium text-gray-700">Content</label>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
+          return (
+            <div key={field.name}>
+              <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
+                {field.label}
+              </label>
+              {field.type === 'file' ? (
+                <input
+                  type="file"
+                  id={field.name}
+                  name={field.name}
+                  onChange={handleChange}
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              ) : (
+                <input
+                  type={field.type}
+                  id={field.name}
+                  name={field.name}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              )}
+            </div>
+          );
+        })}
 
-        <div>
-          <label htmlFor="image" className="block text-sm font-medium text-gray-700">Upload Image</label>
-          <input
-            type="file"
-            id="image"
-            onChange={(e) => setImage(e.target.files[0])} // Menangani file yang di-upload
-            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
-          <select
-            id="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          >
-            <option value="">Select a category</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat.replace('-', ' ')}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Editor value={editorState} onChange={handleEditorChange} />
 
         <div className="flex justify-center">
           <button
