@@ -11,6 +11,7 @@ exports.createService = async (req, res) => {
     'penilaian-amdal',
     'pemeriksaan-uklupl',
     'penilaian-delhdplh',
+    'registrasi-sppl',
     'amdalnet'
   ];
 
