@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { FaEdit } from "react-icons/fa"; // React Icon untuk edit
+import { FaEdit, FaTrash } from "react-icons/fa"; // Import icon delete
 import AlertError from "../../components/AlertError";
 
 const ArticleList = () => {
@@ -39,6 +39,19 @@ const ArticleList = () => {
 
   const handleUpdateClick = (category, id) => {
     navigate(`/update-service/${category}/${id}`);
+  };
+
+  // Function to handle article deletion
+  const handleDeleteClick = async (category, id) => {
+    if (window.confirm("Are you sure you want to delete this article?")) {
+      try {
+        await axios.delete(`http://localhost:5000/service/${category}/${id}`);
+        // Filter out the deleted article from the list
+        setArticles(articles.filter(article => article.id !== id));
+      } catch {
+        setError("Terjadi kesalahan saat menghapus artikel.");
+      }
+    }
   };
 
   return (
@@ -80,10 +93,16 @@ const ArticleList = () => {
               </td>
               <td className="border px-4 py-2 text-center">
                 <button
-                  className="text-blue-500 hover:text-blue-700"
+                  className="text-blue-500 hover:text-blue-700 mr-3"
                   onClick={() => handleUpdateClick(article.category, article.id)}
                 >
                   <FaEdit size={20} />
+                </button>
+                <button
+                  className="text-red-500 hover:text-red-700"
+                  onClick={() => handleDeleteClick(article.category, article.id)}
+                >
+                  <FaTrash size={20} />
                 </button>
               </td>
             </tr>
