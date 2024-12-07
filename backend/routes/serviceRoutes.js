@@ -25,4 +25,10 @@ router.get('/:category', serviceController.getServiceByCategory);
 // POST create new service (with file upload handling)
 router.post('/', upload.single('image'), serviceController.createService); // Tambahkan middleware upload
 
+// PUT update service by category and ID (with file upload handling)
+router.put('/:category/:id', upload.single('image'), serviceController.updateServiceByCategoryAndId);
+
+// GET service by category and id
+router.get('/:category/:id', serviceController.getServiceByCategoryAndId);
+
 module.exports = router;
