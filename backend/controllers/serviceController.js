@@ -110,3 +110,20 @@ exports.getServiceByCategoryAndId = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Delete service by category and ID
+exports.deleteServiceByCategoryAndId = async (req, res) => {
+  const { category, id } = req.params; // Mendapatkan kategori dan ID dari parameter URL
+
+  try {
+    const service = await Service.findOne({ where: { category, id } });
+    if (!service) {
+      return res.status(404).json({ message: 'Service not found for this category and ID' });
+    }
+
+    await service.destroy(); // Menghapus data layanan
+    res.status(200).json({ message: 'Service deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

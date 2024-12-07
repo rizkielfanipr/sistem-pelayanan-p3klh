@@ -31,4 +31,7 @@ router.put('/:category/:id', upload.single('image'), serviceController.updateSer
 // GET service by category and id
 router.get('/:category/:id', serviceController.getServiceByCategoryAndId);
 
+// DELETE service by category and id
+router.delete('/:category/:id', serviceController.deleteServiceByCategoryAndId);
+
 module.exports = router;
