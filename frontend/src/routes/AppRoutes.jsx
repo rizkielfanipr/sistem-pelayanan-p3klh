@@ -12,6 +12,7 @@ import Register from '../pages/Register';
 import Login from '../pages/Login';
 import Dashboard from '../pages/admin/Dashboard';
 import AdminPenapisan from '../pages/admin/AdminPenapisan';
+import UpdateService from '../pages/admin/UpdateService';
 
 const AppRoutes = () => {
   return (
@@ -34,6 +35,7 @@ const AppRoutes = () => {
       {/* Rute Admin */}
       <Route path="/dashboard-admin" element={<Dashboard />} />
       <Route path="/admin-penapisan" element={<AdminPenapisan />} />
+      <Route path="/update-service/:category/:id" element={<UpdateService />} />
     </Routes>
   );
 };
