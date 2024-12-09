@@ -4,7 +4,8 @@ const dotenv = require('dotenv');
 const sequelize = require('./config/Database');
 const serviceRoutes = require('./routes/serviceRoutes');
 const authRoutes = require('./routes/authRoutes');
-const path = require('path'); // Import path untuk mengatur path file statis
+const announcementRoutes = require('./routes/announcementRoutes');
+const path = require('path'); 
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ sequelize.authenticate()
 // Use Routes
 app.use('/auth',authRoutes);
 app.use('/service', serviceRoutes); // Pastikan rute ini sesuai
+app.use('/announcement', announcementRoutes);
 
 // Start server
 app.listen(PORT, async () => {
