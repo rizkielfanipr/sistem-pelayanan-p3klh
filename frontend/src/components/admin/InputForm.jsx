@@ -1,54 +1,33 @@
-// ArticleForm.js
 import { useState } from 'react';
 import axios from 'axios';
 import AlertSucces from '../AlertSuccess';  // Import komponen AlertSucces
 import AlertError from '../AlertError';  // Import komponen AlertError
 import Editor from './Editor'; // Import the new Editor component
+import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 
-const ArticleForm = () => {
-  const categories = [
-    'penapisan-dokling',
-    'penilaian-amdal',
-    'pemeriksaan-uklupl',
-    'penilaian-delhdplh',
-    'registrasi-sppl',
-    'amdalnet',
-  ];
-
-  const categoryLabels = {
-    'penapisan-dokling': 'Penapisan Dokling',
-    'penilaian-amdal': 'Penilaian AMDAL',
-    'pemeriksaan-uklupl': 'Pemeriksaan UKL UPL',
-    'penilaian-delhdplh': 'Penilaian DELH & DPLH',
-    'registrasi-sppl': 'Registrasi SPPL',
-    'amdalnet': 'AMDALNET',
-  };
-
+const InputForm = ({
+  title = 'Create New Article',
+  categories = [],
+  categoryLabels = {},
+  API_URL = '',
+  fields = [],
+}) => {
   const [formData, setFormData] = useState({
     title: '',
-    content: '',  // This will be handled by React Quill
+    content: '',  // Ini akan dihandle oleh React Quill (editor)
     image: null,
     category: '',
   });
 
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
-  const [editorState, setEditorState] = useState(''); // For React Quill editor content
-
-  const API_URL = 'http://localhost:5000/service';
-
-  const fields = [
-    { name: 'title', label: 'Judul', type: 'text' },
-    { name: 'image', label: 'Gambar', type: 'file' },
-    { name: 'category', label: 'Pilih Layanan', type: 'select', options: categories },
-  ];
+  const [editorState, setEditorState] = useState(''); // Untuk konten React Quill editor
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'image' ? files[0] : value,
+      [name]: name === 'image' ? files[0] : value, // Menangani field file
     }));
   };
 
@@ -56,22 +35,21 @@ const ArticleForm = () => {
     setEditorState(value);
     setFormData((prev) => ({
       ...prev,
-      content: value, // React Quill's value is the content
+      content: value, // Mengupdate content dari editor
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validasi form data
-    if (!formData.title || !formData.content || !formData.category || !formData.image) {
+    if (!formData.title || !formData.content || !formData.image) {
       setError("Please fill in all required fields.");
       return;
     }
 
     const form = new FormData();
     form.append('title', formData.title);
-    form.append('content', formData.content); // Content from React Quill
+    form.append('content', formData.content); // Menggunakan konten dari React Quill
     form.append('category', formData.category);
     form.append('image', formData.image);
 
@@ -97,7 +75,7 @@ const ArticleForm = () => {
 
   return (
     <div className="container mx-auto p-6 max-w-lg bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold mb-4 text-center">Create New Article</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-center">{title}</h2>
 
       {successMessage && <AlertSucces message={successMessage} />}
       {error && <AlertError message={error} />}
@@ -119,12 +97,24 @@ const ArticleForm = () => {
                   required
                 >
                   <option value="">Pilih Layanan</option>
-                  {field.options.map((cat) => (
+                  {categories.map((cat) => (
                     <option key={cat} value={cat}>
-                      {categoryLabels[cat]} {/* Menampilkan kategori dengan nama yang lebih user-friendly */}
+                      {categoryLabels[cat] || cat}
                     </option>
                   ))}
                 </select>
+              </div>
+            );
+          }
+
+          // Handle 'editor' field type
+          if (field.type === 'editor') {
+            return (
+              <div key={field.name}>
+                <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
+                  {field.label}
+                </label>
+                <Editor value={editorState} onChange={handleEditorChange} />
               </div>
             );
           }
@@ -158,8 +148,6 @@ const ArticleForm = () => {
           );
         })}
 
-        <Editor value={editorState} onChange={handleEditorChange} />
-
         <div className="flex justify-center">
           <button
             type="submit"
@@ -173,4 +161,19 @@ const ArticleForm = () => {
   );
 };
 
-export default ArticleForm;
+// Menambahkan prop validation menggunakan PropTypes
+InputForm.propTypes = {
+  title: PropTypes.string,
+  categories: PropTypes.arrayOf(PropTypes.string),
+  categoryLabels: PropTypes.objectOf(PropTypes.string),
+  API_URL: PropTypes.string.isRequired,
+  fields: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      type: PropTypes.oneOf(['text', 'file', 'select', 'editor']).isRequired, // Include 'editor' as a valid type
+    })
+  ).isRequired,
+};
+
+export default InputForm;
