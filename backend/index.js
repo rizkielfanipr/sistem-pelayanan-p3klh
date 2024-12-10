@@ -5,6 +5,7 @@ const sequelize = require('./config/Database');
 const serviceRoutes = require('./routes/serviceRoutes');
 const authRoutes = require('./routes/authRoutes');
 const announcementRoutes = require('./routes/announcementRoutes');
+const newsRoutes = require('./routes/newsRoutes');
 const path = require('path'); 
 
 dotenv.config();
@@ -28,6 +29,7 @@ sequelize.authenticate()
 app.use('/auth',authRoutes);
 app.use('/service', serviceRoutes); // Pastikan rute ini sesuai
 app.use('/announcement', announcementRoutes);
+app.use('/news', newsRoutes); 
 
 // Start server
 app.listen(PORT, async () => {
