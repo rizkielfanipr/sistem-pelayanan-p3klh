@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
-import AlertSucces from '../AlertSuccess';  // Import komponen AlertSucces
-import AlertError from '../AlertError';  // Import komponen AlertError
+import AlertSucces from '../AlertSuccess'; // Import komponen AlertSucces
+import AlertError from '../AlertError'; // Import komponen AlertError
 import Editor from './Editor'; // Import the new Editor component
 import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 
@@ -14,8 +14,9 @@ const InputForm = ({
 }) => {
   const [formData, setFormData] = useState({
     title: '',
-    content: '',  // Ini akan dihandle oleh React Quill (editor)
+    content: '', // Ditangani oleh React Quill
     image: null,
+    file: null, // Tambahkan untuk menangani file
     category: '',
   });
 
@@ -27,7 +28,7 @@ const InputForm = ({
     const { name, value, files } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'image' ? files[0] : value, // Menangani field file
+      [name]: files && files.length > 0 ? files[0] : value, // Tangani field file
     }));
   };
 
@@ -35,7 +36,7 @@ const InputForm = ({
     setEditorState(value);
     setFormData((prev) => ({
       ...prev,
-      content: value, // Mengupdate content dari editor
+      content: value, // Update content dari editor
     }));
   };
 
@@ -43,15 +44,16 @@ const InputForm = ({
     e.preventDefault();
 
     if (!formData.title || !formData.content || !formData.image) {
-      setError("Please fill in all required fields.");
+      setError('Please fill in all required fields, including the file.');
       return;
     }
 
     const form = new FormData();
     form.append('title', formData.title);
-    form.append('content', formData.content); // Menggunakan konten dari React Quill
+    form.append('content', formData.content);
     form.append('category', formData.category);
     form.append('image', formData.image);
+    form.append('file', formData.file); // Tambahkan file ke form
 
     try {
       const response = await axios.post(API_URL, form, {
@@ -61,13 +63,13 @@ const InputForm = ({
       });
 
       if (response.status === 201) {
-        setSuccessMessage("Article created successfully!");
-        setFormData({ title: '', content: '', category: '', image: null });
-        setEditorState('');  // Reset editor
+        setSuccessMessage('Article created successfully!');
+        setFormData({ title: '', content: '', category: '', image: null, file: null });
+        setEditorState(''); // Reset editor
         setError('');
       }
     } catch (err) {
-      console.error("Error Response:", err.response);
+      console.error('Error Response:', err.response);
       setError(`Error: ${err.response ? err.response.data.message : err.message}`);
       setSuccessMessage('');
     }
@@ -107,7 +109,6 @@ const InputForm = ({
             );
           }
 
-          // Handle 'editor' field type
           if (field.type === 'editor') {
             return (
               <div key={field.name}>
@@ -161,7 +162,6 @@ const InputForm = ({
   );
 };
 
-// Menambahkan prop validation menggunakan PropTypes
 InputForm.propTypes = {
   title: PropTypes.string,
   categories: PropTypes.arrayOf(PropTypes.string),
@@ -171,7 +171,7 @@ InputForm.propTypes = {
     PropTypes.shape({
       name: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
-      type: PropTypes.oneOf(['text', 'file', 'select', 'editor']).isRequired, // Include 'editor' as a valid type
+      type: PropTypes.oneOf(['text', 'file', 'select', 'editor']).isRequired,
     })
   ).isRequired,
 };

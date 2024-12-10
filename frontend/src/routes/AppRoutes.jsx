@@ -14,6 +14,7 @@ import Dashboard from '../pages/admin/Dashboard';
 import AdminPenapisan from '../pages/admin/AdminPenapisan';
 import UpdateService from '../pages/admin/UpdateService';
 import AdminPengumuman from '../pages/admin/AdminPengumuman';
+import AdminPublikasi from '../pages/admin/AdminPublikasi';
 
 const AppRoutes = () => {
   return (
@@ -38,6 +39,7 @@ const AppRoutes = () => {
       <Route path="/admin-penapisan" element={<AdminPenapisan />} />
       <Route path="/update-service/:category/:id" element={<UpdateService />} />
       <Route path="/admin-pengumuman" element={<AdminPengumuman />} />
+      <Route path="/admin-publikasi" element={<AdminPublikasi />} />
     </Routes>
   );
 };

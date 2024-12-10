@@ -1,24 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import PropTypes from "prop-types";
-import Modal from "./Modal"; 
-
-// Data pengumuman dan publikasi
-const pengumumanData = Array.from({ length: 10 }, (_, i) => ({
-  title: `Pengumuman ${i + 1}`,
-  description: `Deskripsi Pengumuman ${i + 1}`,
-}));
-
-const publikasiData = Array.from({ length: 10 }, (_, i) => ({
-  title: `Publikasi ${i + 1}`,
-  description: `Deskripsi Publikasi ${i + 1}`,
-}));
+import Modal from "./Modal";
 
 const PengumumanPublikasi = () => {
   const [isPengumuman, setIsPengumuman] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [pengumumanData, setPengumumanData] = useState([]);
+  const [publikasiData, setPublikasiData] = useState([]);
+
+  useEffect(() => {
+    const fetchPengumuman = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/announcement");
+        const data = await response.json();
+        setPengumumanData(data);
+      } catch (error) {
+        console.error("Error fetching pengumuman:", error);
+      }
+    };
+
+    const fetchPublikasi = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/news");
+        const data = await response.json();
+        setPublikasiData(data);
+      } catch (error) {
+        console.error("Error fetching publikasi:", error);
+      }
+    };
+
+    fetchPengumuman();
+    fetchPublikasi();
+  }, []);
+
+  const baseURL = "http://localhost:5000/";
 
   const data = isPengumuman ? pengumumanData : publikasiData;
   const maxIndex = data.length - 3;
@@ -31,8 +49,13 @@ const PengumumanPublikasi = () => {
   };
 
   const handleCardClick = (item) => {
-    setSelectedItem(item);
-    setIsModalOpen(true); // Buka modal saat card diklik
+    setSelectedItem({
+      title: item.title,
+      content: item.content,
+      imageSrc: baseURL + item.image,
+      fileDownloadLink: `http://localhost:5000/announcement/download/${item.id}`, // Tautan unduh
+    });
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
@@ -59,7 +82,7 @@ const PengumumanPublikasi = () => {
             onClick={() => handleNavigation(-1)}
             disabled={currentIndex === 0}
           />
-          <CardList data={data.slice(currentIndex, currentIndex + 3)} onCardClick={handleCardClick} />
+          <CardList data={data.slice(currentIndex, currentIndex + 3)} onCardClick={handleCardClick} baseURL={baseURL} />
           <NavigationButton
             direction="right"
             onClick={() => handleNavigation(1)}
@@ -67,13 +90,18 @@ const PengumumanPublikasi = () => {
           />
         </div>
 
-        {/* Modal */}
-        <Modal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          title={selectedItem?.title || ""}
-          description={selectedItem?.description || ""}
-        />
+        {isModalOpen && selectedItem && (
+          <Modal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            title={selectedItem.title}
+            imageSrc={selectedItem.imageSrc}
+            fileDownloadLink={selectedItem.fileDownloadLink}
+            downloadButtonText="Unduh File"
+          >
+            <p>{selectedItem.content}</p>
+          </Modal>
+        )}
       </div>
     </section>
   );
@@ -105,16 +133,21 @@ ToggleButton.propTypes = {
   onToggle: PropTypes.func.isRequired,
 };
 
-const CardList = ({ data, onCardClick }) => (
+const CardList = ({ data, onCardClick, baseURL }) => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
     {data.map((item, index) => (
       <div
         key={index}
         className="group cursor-pointer border border-gray-300 rounded-2xl p-6 transition-all duration-300 hover:border-[#03346E] flex flex-col items-center"
-        onClick={() => onCardClick(item)} // Panggil handleCardClick untuk membuka modal
+        onClick={() => onCardClick(item)}
       >
-        <h3 className="text-xl font-semibold text-[#03346E] mb-4">{item.title}</h3>
-        <p className="text-gray-600">{item.description}</p>
+        <img
+          src={baseURL + item.image}
+          alt={item.title}
+          className="w-full h-40 object-cover rounded-lg mb-4"
+        />
+        <h3 className="text-xl font-semibold text-[#03346E] mb-2">{item.title}</h3>
+        <p className="text-gray-600">{item.content.substring(0, 50)}...</p>
       </div>
     ))}
   </div>
@@ -123,11 +156,14 @@ const CardList = ({ data, onCardClick }) => (
 CardList.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
+      id: PropTypes.number.isRequired,
       title: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
+      content: PropTypes.string.isRequired,
+      image: PropTypes.string.isRequired,
     })
   ).isRequired,
   onCardClick: PropTypes.func.isRequired,
+  baseURL: PropTypes.string.isRequired,
 };
 
 const NavigationButton = ({ direction, onClick, disabled }) => {
