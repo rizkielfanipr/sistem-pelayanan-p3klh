@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/UserModel');
+const Admin = require('../models/AdminModel');
 
 // Register Route
 exports.register = async (req, res) => {
@@ -14,25 +14,25 @@ exports.register = async (req, res) => {
 
   try {
     // Cek apakah email sudah ada
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
+    const existingAdmin = await Admin.findOne({ where: { email } });
+    if (existingAdmin) {
       return res.status(400).json({ message: 'Email already in use' });
     }
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user
-    const newUser = await User.create({
+    // Create new admin
+    const newAdmin = await Admin.create({
       username,
       email,
       password: hashedPassword,
     });
 
-    res.status(201).json({ message: 'User registered successfully', userId: newUser.id });
+    res.status(201).json({ message: 'Admin registered successfully', adminId: newAdmin.id });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error registering user', error: error.message });
+    res.status(500).json({ message: 'Error registering admin', error: error.message });
   }
 };
 
@@ -45,26 +45,26 @@ exports.login = async (req, res) => {
     return res.status(400).json({ message: 'Email and password are required' });
   }
 
-  const user = await User.findOne({ where: { email } });
-  if (!user) {
-    return res.status(400).json({ message: 'User not found' });
+  const admin = await Admin.findOne({ where: { email } });
+  if (!admin) {
+    return res.status(400).json({ message: 'Admin not found' });
   }
 
   // Compare password
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, admin.password);
   if (!isMatch) {
     return res.status(400).json({ message: 'Invalid credentials' });
   }
 
   // Generate JWT token
-  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign({ adminId: admin.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
   // Generate Refresh Token
-  const refreshToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  const refreshToken = jwt.sign({ adminId: admin.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
   // Simpan refresh token di database
-  user.refresh_token = refreshToken;
-  await user.save();
+  admin.refresh_token = refreshToken;
+  await admin.save();
 
   res.json({
     message: 'Login successful',
@@ -81,9 +81,9 @@ exports.refreshToken = async (req, res) => {
     return res.status(400).json({ message: 'Refresh token is required' });
   }
 
-  // Cari user berdasarkan refresh token yang disimpan di database
-  const user = await User.findOne({ where: { refresh_token } });
-  if (!user) {
+  // Cari admin berdasarkan refresh token yang disimpan di database
+  const admin = await Admin.findOne({ where: { refresh_token } });
+  if (!admin) {
     return res.status(403).json({ message: 'Invalid refresh token' });
   }
 
@@ -92,7 +92,7 @@ exports.refreshToken = async (req, res) => {
     const decoded = jwt.verify(refresh_token, process.env.JWT_SECRET);
 
     // Generate new access token
-    const newToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const newToken = jwt.sign({ adminId: admin.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.json({ newToken });
   } catch (error) {
