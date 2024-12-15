@@ -12,6 +12,7 @@
   "dependencies": {
     "@tinymce/tinymce-react": "^5.1.1",
     "axios": "^1.7.8",
+    "dompurify": "^3.2.3",
     "quill": "^2.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

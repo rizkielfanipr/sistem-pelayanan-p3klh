@@ -15,6 +15,7 @@ import AdminPenapisan from '../pages/admin/AdminPenapisan';
 import UpdateService from '../pages/admin/UpdateService';
 import AdminPengumuman from '../pages/admin/AdminPengumuman';
 import AdminPublikasi from '../pages/admin/AdminPublikasi';
+import DetailDiskusi from '../pages/services/DetailDiskusi';
 
 const AppRoutes = () => {
   return (
@@ -40,6 +41,7 @@ const AppRoutes = () => {
       <Route path="/update-service/:category/:id" element={<UpdateService />} />
       <Route path="/admin-pengumuman" element={<AdminPengumuman />} />
       <Route path="/admin-publikasi" element={<AdminPublikasi />} />
+      <Route path="/detail-diskusi/:id" element={<DetailDiskusi />} />
     </Routes>
   );
 };
