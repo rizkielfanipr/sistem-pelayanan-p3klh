@@ -16,6 +16,8 @@ import UpdateService from '../pages/admin/UpdateService';
 import AdminPengumuman from '../pages/admin/AdminPengumuman';
 import AdminPublikasi from '../pages/admin/AdminPublikasi';
 import DetailDiskusi from '../pages/services/DetailDiskusi';
+import AdminLogin from '../pages/admin/AdminLogin';
+import AdminRegister from '../pages/admin/AdminRegister';
 
 const AppRoutes = () => {
   return (
@@ -34,6 +36,8 @@ const AppRoutes = () => {
       {/* Rute Auth */}
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/admin-register" element={<AdminRegister />} />
+      <Route path="/admin-login" element={<AdminLogin />} />
 
       {/* Rute Admin */}
       <Route path="/dashboard-admin" element={<Dashboard />} />
