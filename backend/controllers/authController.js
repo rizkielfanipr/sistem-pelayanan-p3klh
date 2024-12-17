@@ -5,11 +5,11 @@ const Admin = require('../models/AdminModel');
 // Register Route
 exports.register = async (req, res) => {
   console.log(req.body);
-  const { username, email, password } = req.body;
+  const { username, email, password, name } = req.body;
 
   // Validasi input
-  if (!email || !password || !username) {
-    return res.status(400).json({ message: 'Email, username, and password are required' });
+  if (!email || !password || !username || !name) {  // Periksa apakah 'name' disertakan
+    return res.status(400).json({ message: 'Email, username, password, and name are required' });
   }
 
   try {
@@ -22,11 +22,12 @@ exports.register = async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new admin
+    // Buat admin baru
     const newAdmin = await Admin.create({
       username,
       email,
       password: hashedPassword,
+      name,  // Menyimpan nama ke database
     });
 
     res.status(201).json({ message: 'Admin registered successfully', adminId: newAdmin.id });
@@ -50,7 +51,7 @@ exports.login = async (req, res) => {
     return res.status(400).json({ message: 'Admin not found' });
   }
 
-  // Compare password
+  // Bandingkan password
   const isMatch = await bcrypt.compare(password, admin.password);
   if (!isMatch) {
     return res.status(400).json({ message: 'Invalid credentials' });
@@ -62,7 +63,7 @@ exports.login = async (req, res) => {
   // Generate Refresh Token
   const refreshToken = jwt.sign({ adminId: admin.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-  // Simpan refresh token di database
+  // Simpan refresh token ke database
   admin.refresh_token = refreshToken;
   await admin.save();
 
@@ -70,6 +71,7 @@ exports.login = async (req, res) => {
     message: 'Login successful',
     token,
     refresh_token: refreshToken,
+    name: admin.name,  // Kirim nama dalam respon
   });
 };
 

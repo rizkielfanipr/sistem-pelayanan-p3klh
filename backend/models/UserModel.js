@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/Database');
 
-const Admin = sequelize.define('Admin', {
+const User = sequelize.define('User', {
   username: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -19,10 +19,10 @@ const Admin = sequelize.define('Admin', {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  name: {  // Kolom baru 'name' ditambahkan
+  name: {  // Kolom 'name' ditambahkan
     type: DataTypes.STRING,
     allowNull: false,
   },
 });
 
-module.exports = Admin;
+module.exports = User;

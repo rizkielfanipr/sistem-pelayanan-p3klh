@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const sequelize = require('./config/Database');
 const serviceRoutes = require('./routes/serviceRoutes');
 const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 const announcementRoutes = require('./routes/announcementRoutes');
 const newsRoutes = require('./routes/newsRoutes');
 const discussionController = require('./routes/discussionRoutes');
@@ -27,7 +28,8 @@ sequelize.authenticate()
   .catch((err) => console.error('Unable to connect to the database:', err));
 
 // Use Routes
-app.use('/auth',authRoutes);
+app.use('/auth', authRoutes);
+app.use('/user', userRoutes);
 app.use('/service', serviceRoutes); // Pastikan rute ini sesuai
 app.use('/announcement', announcementRoutes);
 app.use('/news', newsRoutes);
