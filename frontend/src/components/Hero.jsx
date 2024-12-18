@@ -14,7 +14,7 @@ const Hero = () => {
     buttons: [
       {
         text: 'Ajukan Konsultasi',
-        href: '#',
+        href: '/login',
         style: 'bg-[#002a62] hover:bg-[#002A62] text-white border-0 rounded-xl px-6 py-3',
       },
       {
