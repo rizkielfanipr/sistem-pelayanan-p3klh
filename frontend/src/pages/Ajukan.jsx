@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -15,6 +16,7 @@ const Ajukan = () => {
   const [responseMessage, setResponseMessage] = useState("");
   const [code, setCode] = useState("");
   const [validDate, setValidDate] = useState("");
+  const navigate = useNavigate(); // Initialize navigate
 
   const serviceCategories = [
     "Penilaian AMDAL", "Penapisan Dokling", "Pemeriksaan UKL-UPL", "Registrasi SPPL", 
@@ -54,12 +56,12 @@ const Ajukan = () => {
       });
       setResponseMessage(response.data.message);
       setCode(response.data.code);
+      navigate(`/berhasil/${response.data.code}`); // Redirect to 'berhasil' page
     } catch {
       setResponseMessage("Terjadi kesalahan, silakan coba lagi.");
     }
   };
 
-  // Array untuk field yang akan di-render
   const formFields = [
     {
       id: "service",
@@ -97,7 +99,6 @@ const Ajukan = () => {
     <div className="font-poppins">
       <Navbar />
       <Header title="Buat Janji Temu Konsultasi Luring" description="Ajukan Konsultasi Mengenai Persetujuan Lingkungan Secara Luring atau Daring" />
-
       <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-8">
         <h1 className="text-2xl font-semibold text-center text-gray-800 mb-6">Formulir Pengajuan Konsultasi</h1>
         {responseMessage && (
@@ -158,7 +159,6 @@ const Ajukan = () => {
           </div>
         </form>
       </div>
-
       <Footer />
     </div>
   );

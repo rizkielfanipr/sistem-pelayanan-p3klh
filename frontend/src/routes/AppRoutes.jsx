@@ -20,6 +20,7 @@ import AdminLogin from '../pages/admin/AdminLogin';
 import AdminRegister from '../pages/admin/AdminRegister';
 import Konsultasi from '../pages/Konsultasi';
 import Ajukan from '../pages/Ajukan';
+import Berhasil from '../pages/Berhasil';
 
 const AppRoutes = () => {
   return (
@@ -36,6 +37,7 @@ const AppRoutes = () => {
       <Route path="/forum-diskusi" element={<Diskusi />} />
       <Route path="/konsultasi" element={<Konsultasi />} />
       <Route path="/konsultasi/ajukan" element={<Ajukan />} />
+      <Route path="/berhasil/:code" element={<Berhasil />} />
       
       {/* Rute Auth */}
       <Route path="/register" element={<Register />} />
