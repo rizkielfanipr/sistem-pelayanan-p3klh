@@ -11,6 +11,7 @@ const InputForm = ({
   categoryLabels = {},
   API_URL = '',
   fields = [],
+  onSubmit, // Tambahkan onSubmit sebagai prop
 }) => {
   const [formData, setFormData] = useState({
     title: '',
@@ -67,6 +68,7 @@ const InputForm = ({
         setFormData({ title: '', content: '', category: '', image: null, file: null });
         setEditorState(''); // Reset editor
         setError('');
+        if (onSubmit) onSubmit(response.data); // Panggil onSubmit jika ada
       }
     } catch (err) {
       console.error('Error Response:', err.response);
@@ -100,8 +102,8 @@ const InputForm = ({
                 >
                   <option value="">Pilih Layanan</option>
                   {categories.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {categoryLabels[cat] || cat}
+                    <option key={cat.value} value={cat.value}>
+                      {categoryLabels[cat.value] || cat.label}
                     </option>
                   ))}
                 </select>
@@ -164,7 +166,12 @@ const InputForm = ({
 
 InputForm.propTypes = {
   title: PropTypes.string,
-  categories: PropTypes.arrayOf(PropTypes.string),
+  categories: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+    })
+  ),
   categoryLabels: PropTypes.objectOf(PropTypes.string),
   API_URL: PropTypes.string.isRequired,
   fields: PropTypes.arrayOf(
@@ -174,6 +181,7 @@ InputForm.propTypes = {
       type: PropTypes.oneOf(['text', 'file', 'select', 'editor']).isRequired,
     })
   ).isRequired,
+  onSubmit: PropTypes.func, // Tambahkan prop onSubmit
 };
 
 export default InputForm;

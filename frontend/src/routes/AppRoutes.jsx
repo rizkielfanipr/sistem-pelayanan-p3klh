@@ -19,6 +19,7 @@ import DetailDiskusi from '../pages/services/DetailDiskusi';
 import AdminLogin from '../pages/admin/AdminLogin';
 import AdminRegister from '../pages/admin/AdminRegister';
 import Konsultasi from '../pages/Konsultasi';
+import Ajukan from '../pages/Ajukan';
 
 const AppRoutes = () => {
   return (
@@ -34,7 +35,8 @@ const AppRoutes = () => {
       <Route path="/amdalnet" element={<Amdalnet />} />
       <Route path="/forum-diskusi" element={<Diskusi />} />
       <Route path="/konsultasi" element={<Konsultasi />} />
-
+      <Route path="/konsultasi/ajukan" element={<Ajukan />} />
+      
       {/* Rute Auth */}
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />

@@ -6,7 +6,7 @@ const Login = () => {
       <LoginForm 
         apiUrl="http://localhost:5000/user/login" 
         title=" Login Akun"
-        redirectTo="/" 
+        redirectTo="/konsultasi" 
       />
     </div>
   );
