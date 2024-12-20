@@ -7,7 +7,8 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const announcementRoutes = require('./routes/announcementRoutes');
 const newsRoutes = require('./routes/newsRoutes');
-const discussionController = require('./routes/discussionRoutes');
+const discussionRoutes = require('./routes/discussionRoutes');
+const consultationRoutes = require('./routes/consultationRoutes');
 const path = require('path'); 
 
 dotenv.config();
@@ -33,7 +34,8 @@ app.use('/user', userRoutes);
 app.use('/service', serviceRoutes); // Pastikan rute ini sesuai
 app.use('/announcement', announcementRoutes);
 app.use('/news', newsRoutes);
-app.use('/discussions', discussionController);
+app.use('/discussions', discussionRoutes);
+app.use('/consultations', consultationRoutes);
 
 // Start server
 app.listen(PORT, async () => {
